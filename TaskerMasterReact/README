@@ -1,0 +1,22 @@
+TaskerMaster jest aplikacją typu todo, stworzoną w oparciu o React z wykorzystaniem Express. 
+Pozwala użytkownikom na rejestrację konta, logowanie się po rejestracji oraz zarządzanie zadaniami do wykonania. 
+Aplikacja umożliwia dodawanie tasków z określonym terminem, notatkami i priorytetami. 
+Po dodaniu taska, można również dodać do niego subtaski oraz oznaczyć je jako wykonane. 
+Zarówno taski, jak i subtaski można usuwać.
+
+Uruchamianie aplikacji
+
+1. Upewnij się, że masz zainstalowanego Dockera na swoim systemie.
+2. Sklonuj repozytorium TaskerMaster z GitHuba. 
+  git clone https://github.com/nazwa_uzytkownika/TaskerMaster.git
+3. Przejdź do katalogu TaskerMaster.
+  cd TaskerMaster
+4. Zbuduj obrazy Dockera dla aplikacji.
+  docker-compose up --build
+5. Aplikację można uruchomić poprzez link http://localhost:5173/
+
+TaskerMaster to aplikacja typu todo, która umożliwia użytkownikom zarządzanie zadaniami do wykonania. 
+Dzięki funkcjom rejestracji, logowania, dodawania, edytowania, filtrowania i usuwania zadań, 
+użytkownicy mogą skutecznie organizować swoje zadania. 
+Aplikacja jest oparta na React-cie i Expressie, oraz jest dostarczana jako kontener Dockerowy, 
+co ułatwia jej uruchomienie i wdrażanie.
