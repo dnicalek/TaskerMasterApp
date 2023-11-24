@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/TaskerMaster.iml" filepath="$PROJECT_DIR$/.idea/TaskerMaster.iml" />
-      <module fileurl="file://$PROJECT_DIR$/TaskerMasterJava/TaskerMasterJava.iml" filepath="$PROJECT_DIR$/TaskerMasterJava/TaskerMasterJava.iml" />
-    </modules>
-  </component>
-</project>
