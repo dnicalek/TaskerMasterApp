@@ -2,12 +2,13 @@
 import {AiOutlinePlus} from 'react-icons/ai'
 import {FiSquare, FiCheck} from 'react-icons/fi'
 import {IoCloseSharp} from 'react-icons/io5'
-import {  useState } from 'react';
+import {  useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import { schema } from './validationSchema';
 import { useAuthUser, } from 'react-auth-kit';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
+import jwt_decode from 'jwt-decode';
 
 export default function Task({
     id, 
@@ -17,14 +18,17 @@ export default function Task({
     priority, 
     status,
     subtasks,
-    fetchPosts
+    fetchPosts,
+    username
 }) {
     const [isButtonHovered, setButtonHovered] = useState(false);
     const [isSubtaskHovered, setSubtaskHovered] = useState(false);
     const [inputVisible, setInputVisible] = useState(false);
     const authUser = useAuthUser();
-    const username = authUser()?.usernameOrEmail || '';
-
+    const currentUsername = authUser()?.usernameOrEmail || '';
+    const token = authUser()?.token || '';
+    const [userRole, setUserRole] = useState('')
+    const canDelete = username === currentUsername || userRole === "ROLE_ADMIN";
     const {
         register,
         handleSubmit,
@@ -40,7 +44,7 @@ export default function Task({
             const formattedDateCreatedAt = new Date().toISOString().split('T')[0];
             const updatedData = {
                 ...data,
-                username: username,
+                username: currentUsername,
                 taskId: id,
                 createdAt: formattedDateCreatedAt,
                 status: "todo"
@@ -126,6 +130,27 @@ export default function Task({
         })
     }
 
+    
+    const getUserRoles = useCallback(() => {
+        try {
+            const decodedToken = jwt_decode(token);
+            if (decodedToken && decodedToken.roles) {
+                setUserRole(decodedToken.roles[0]);
+            } else {
+                console.error('No roles info in token');
+                return [];
+            }
+        } catch (error) {
+            console.error('Error while decoding token', error);
+            return [];
+        }
+    }, [token]);
+
+    useEffect(() => {
+        getUserRoles();
+    }, [getUserRoles]);
+
+
   return (
     <div style={taskContainer}>
         <div>
@@ -175,7 +200,7 @@ export default function Task({
                 textDecorationThickness: 2,
             } : null
         }>{taskName}</h3>
-        {status === 'completed' ?
+        {status === 'completed' && canDelete ?
                 <IoCloseSharp 
                     style={{
                         width: 20,
@@ -236,6 +261,8 @@ export default function Task({
                         textDecoration: 'line-through',
                     } : null
                 }>{subtask.content}</p>
+                {canDelete ?
+                <>
                 {isSubtaskHovered ?
                 <IoCloseSharp 
                     style={{
@@ -250,6 +277,13 @@ export default function Task({
                     height: 20,
                 }}
                 />}
+                </>:
+                    <div style={{
+                        width: 20,
+                        height: 20,
+                        
+                    }} />
+                }
             </div>
             ))}
             </div>

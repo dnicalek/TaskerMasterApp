@@ -92,6 +92,7 @@ const filteredTasks = tasks.filter(task => {
           status={task.status}
           subtasks={task.subtasks}
           fetchPosts={fetchPosts}
+          username={task.username}
         
         />
       ))}
