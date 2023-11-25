@@ -9,12 +9,13 @@ import { useNavigate } from "react-router-dom";
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const authUser = useAuthUser();
-  const username = authUser()?.username || '';
+  const username = authUser()?.usernameOrEmail || '';
   const navigate = useNavigate();
   const [filter, setFilter] = useState('all');
 
 const fetchPosts = () => {
-  axios.get(`http://localhost:3000/tasks/${username}`)
+  console.log(username)
+  axios.get(`http://localhost:8080/api/tasks/tasksWithSubtasks`)
   .then(response => {
     setTasks(response.data);
     console.log(response.data);

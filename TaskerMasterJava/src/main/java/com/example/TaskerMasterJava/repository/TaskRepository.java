@@ -20,11 +20,11 @@ public class TaskRepository {
     }
 
     public List<Task> getAllTasksWithSubtasks() {
-        List<Task> tasks = jdbcTemplate.query("SELECT * FROM posts", BeanPropertyRowMapper.newInstance(Task.class));
+        List<Task> tasks = jdbcTemplate.query("SELECT * FROM tasks", BeanPropertyRowMapper.newInstance(Task.class));
 
         for (Task task : tasks){
             List<Subtask> subtasks = jdbcTemplate.query(
-                    "SELECT * FROM comments WHERE taskId = ?",
+                    "SELECT * FROM subtasks WHERE taskId = ?",
                     new Object[]{task.getId()},
                     BeanPropertyRowMapper.newInstance(Subtask.class));
         task.setSubtasks(subtasks);
@@ -38,7 +38,7 @@ public class TaskRepository {
     }
 
     public int save(Task task) {
-        jdbcTemplate.update("INSERT INTO posts(taskName, deadline, notes, priority, username, createdAt, status) VALUES(?, ?, ?, ?, ?, ?, ?)",
+        jdbcTemplate.update("INSERT INTO tasks(taskName, deadline, notes, priority, username, createdAt, status) VALUES(?, ?, ?, ?, ?, ?, ?)",
                 task.getTaskName(),
                 task.getDeadline(),
                 task.getNotes(),

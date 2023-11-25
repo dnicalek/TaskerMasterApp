@@ -23,7 +23,7 @@ export default function Task({
     const [isSubtaskHovered, setSubtaskHovered] = useState(false);
     const [inputVisible, setInputVisible] = useState(false);
     const authUser = useAuthUser();
-    const username = authUser()?.username || '';
+    const username = authUser()?.usernameOrEmail || '';
 
     const {
         register,
@@ -37,11 +37,16 @@ export default function Task({
     const onSubmit = async (data) => {
         console.log(data)
         try {
+            const formattedDateCreatedAt = new Date().toISOString().split('T')[0];
             const updatedData = {
                 ...data,
                 username: username,
+                taskId: id,
+                createdAt: formattedDateCreatedAt,
+                status: "todo"
             };
-            const response = await axios.post(`http://localhost:3000/tasks/${id}/subtasks`, updatedData)
+            console.log(updatedData)
+            const response = await axios.post(`http://localhost:8080/api/subtasks`, updatedData)
             console.log("Response: ", response);
             reset();
             setInputVisible(false)
@@ -59,7 +64,7 @@ export default function Task({
     
 
     const deleteSubtask = (subtaskId) => {
-        axios.delete(`http://localhost:3000/subtasks/${subtaskId}`)
+        axios.delete(`http://localhost:8080/api/subtasks/${subtaskId}`)
         .then(response => {
             console.log(response);
             fetchPosts();
@@ -69,8 +74,18 @@ export default function Task({
         })
     } 
 
-    const updateSubtask = (subtaskId) => {
-        axios.put(`http://localhost:3000/subtasks/${subtaskId}/toggleStatus`)
+    const updateSubtask = (subtask) => {
+        const status = subtask.status === 'todo' ? "completed" : "todo";
+        console.log(status)
+        const data = {
+            id: subtask.id,
+            taskId: subtask.taskId,
+            content: subtask.content,
+            status: status,
+            username: subtask.username,
+            createdAt: subtask.createdAt,
+        }
+        axios.put(`http://localhost:8080/api/subtasks/${subtask.id}`, data)
         .then(response => {
             console.log(response);
             fetchPosts();
@@ -82,7 +97,14 @@ export default function Task({
 
     const updateTask = (taskId, changeToStatus) => {
         if(!(status === changeToStatus)) {
-            axios.put(`http://localhost:3000/tasks/${taskId}/${changeToStatus}`)
+            const data = {
+                taskName: taskName,
+                notes: notes,
+                priority: priority,
+                status: changeToStatus,
+                deadline: deadline,
+            };
+            axios.put(`http://localhost:8080/api/tasks/${taskId}`, data)
             .then(response => {
                 console.log(response);
                 fetchPosts();
@@ -94,7 +116,7 @@ export default function Task({
     }
 
     const deleteTask = (taskId) => {
-        axios.delete(`http://localhost:3000/tasks/${taskId}`)
+        axios.delete(`http://localhost:8080/api/tasks/${taskId}`)
         .then(response => {
             console.log(response);
             fetchPosts();
@@ -106,7 +128,6 @@ export default function Task({
 
   return (
     <div style={taskContainer}>
-     
         <div>
         <div style={{
             display: 'flex',
@@ -199,7 +220,7 @@ export default function Task({
                     height: 20,
                     cursor: 'pointer'
                 }}
-                onClick={() => updateSubtask(subtask.id)}
+                onClick={() => updateSubtask(subtask)}
                 />  : 
                 <FiCheck
                 style={{
@@ -207,7 +228,7 @@ export default function Task({
                     height: 20,
                     cursor: 'pointer'
                 }}
-                onClick={() => updateSubtask(subtask.id)}
+                onClick={() => updateSubtask(subtask)}
                 /> }
                 <p style={
                     subtask.status === 'completed' ?
@@ -232,7 +253,7 @@ export default function Task({
             </div>
             ))}
             </div>
-        )}
+         )} 
         </div>
 
       {inputVisible ? 

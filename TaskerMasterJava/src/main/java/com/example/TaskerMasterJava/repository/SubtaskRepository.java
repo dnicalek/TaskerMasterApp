@@ -48,6 +48,6 @@ public class SubtaskRepository {
     }
 
     public int deleteByTaskId(int taskId) {
-        return jdbcTemplate.update("DELETE FROM comments WHERE taskId=?", taskId);
+        return jdbcTemplate.update("DELETE FROM subtasks WHERE taskId=?", taskId);
     }
 }

@@ -32,7 +32,7 @@ export default function SignUp() {
     const onSubmit = async (data) => {
         console.log("Data: ", data);
         try {
-            await axios.post("http://localhost:3000/register", data);
+            await axios.post("http://localhost:8080/api/auth/signup", data);
             navigate("/");
         } catch (error) {
             if (error && error instanceof AxiosError) {

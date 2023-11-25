@@ -1,7 +1,7 @@
 import { object, string } from "yup";
 
 export const loginSchema = object({
-  username: string()
+  usernameOrEmail: string()
     .min(5, "Username must be at least 5 characters long")
     .required("Username is required"),
   password: string()

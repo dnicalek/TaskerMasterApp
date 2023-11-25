@@ -38,7 +38,7 @@ public class SubtaskController {
     public int update(@PathVariable("subtaskId") int subtaskId, @RequestBody Subtask updatedSubtask) {
         Subtask subtask = subtaskRepository.getById(subtaskId);
         if(subtask != null) {
-            subtask.setContent(updatedSubtask.getContent());
+            subtask.setStatus(updatedSubtask.getStatus());
             subtaskRepository.update(subtask);
 
             return 1;

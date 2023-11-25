@@ -25,25 +25,26 @@ export default function SignIn() {
 
     const onSubmit = async (data) => {
         try {
-            const response = await axios.post("http://localhost:3000/login", data);
+            const response = await axios.post("http://localhost:8080/api/auth/signin", data);
 
             signIn({
-                token: response.data.token,
+                token: response.data.accessToken,
                 expiresIn: response.data.expiresIn,
                 tokenType: response.data.tokenType,
                 authState: {
-                    username: data.username,
+                    usernameOrEmail: data.usernameOrEmail,
+                    token: response.data.accessToken,
                 }
             });
             navigate("/");
         } catch (error) {
             if (error && error instanceof AxiosError) {
                 if (error.response) {
-                    setError("username", { message: error.response.data });
+                    setError("usernameOrEmail", { message: error.response.data });
                     setError("password", { message: error.response.data });
                     console.log(error)
                 } else {
-                    setError("username", { message: "An error occurred. Please try again later." });
+                    setError("usernameOrEmail", { message: "An error occurred. Please try again later." });
                     setError("password", { message: "An error occurred. Please try again later." });
                 }
             }
@@ -57,17 +58,17 @@ export default function SignIn() {
                 <form onSubmit={handleSubmit(onSubmit)} style={formStyle}>
                     <h1 style={{ color: '#fff', textAlign: 'center', fontSize: '2rem', fontWeight: 'bold' }}>Sign In</h1>
                     <div style={fieldStyle}>
-                        <label htmlFor="username">Username:</label>
+                        <label htmlFor="usernameOrEmail">Username:</label>
                         <input
                             type="text"
                             style={{
                                 ...inputStyle,
-                                ...(errors.username ? errorInputStyle : {})
+                                ...(errors.usernameOrEmail ? errorInputStyle : {})
                             }}
-                            id="username"
-                            {...register('username', { required: 'To pole jest wymagane' })}
+                            id="usernameOrEmail"
+                            {...register('usernameOrEmail', { required: 'This field is required' })}
                         />
-                        {errors.username && <span style={errorTextStyle}>{errors.username.message}</span>}
+                        {errors.usernameOrEmail && <span style={errorTextStyle}>{errors.usernameOrEmail.message}</span>}
                     </div>
                     <div style={fieldStyle}>
                         <label htmlFor="password">Password:</label>
@@ -78,7 +79,7 @@ export default function SignIn() {
                                 ...(errors.password ? errorInputStyle : {})
                             }}
                             id="password"
-                            {...register('password', { required: 'To pole jest wymagane' })}
+                            {...register('password', { required: 'This field is required' })}
                         />
                         {errors.password && <span style={errorTextStyle}>{errors.password.message}</span>}
                     </div>

@@ -12,7 +12,7 @@ import { useAuthUser, } from 'react-auth-kit';
 
 export default function AddTask() {
     const authUser = useAuthUser();
-    const username = authUser()?.username || '';
+    const username = authUser()?.usernameOrEmail || '';
     const [isButtonHovered, setButtonHovered] = useState(false);
     const navigate = useNavigate();
     const {
@@ -25,9 +25,17 @@ export default function AddTask() {
     });
 
     const onSubmit = async (data) => {
-        console.log("Data: ", data);
         try {
-            await axios.post("http://localhost:3000/addTask", data);
+            const formattedDateCreatedAt = new Date().toISOString().split('T')[0];
+            console.log("Data: ", data);
+            const formattedDateDeadline = new Date(data.deadline).toISOString().split('T')[0];
+            const updatedData = {
+                ...data,
+                createdAt: formattedDateCreatedAt,
+                deadline: formattedDateDeadline,
+                status: "todo"
+            };
+             await axios.post("http://localhost:8080/api/tasks", updatedData);
             navigate("/");
         } catch (error) {
             if (error && error instanceof AxiosError) {
